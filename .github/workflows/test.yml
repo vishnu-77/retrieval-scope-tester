@@ -1,0 +1,39 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+      # The fixtures are the end-to-end check: the tester must pass a correct
+      # backend and must actually detect the four violation classes in the
+      # deliberately vulnerable one. A tester that never fails is worthless.
+      - name: Secure fixture must pass (exit 0)
+        run: |
+          python retrieval_scope_tester.py \
+            --plan examples/test_plan.json \
+            --fixture examples/fixture_secure.json
+
+      - name: Vulnerable fixture must be detected (exit 2)
+        run: |
+          set +e
+          python retrieval_scope_tester.py \
+            --plan examples/test_plan.json \
+            --fixture examples/fixture_vulnerable.json
+          code=$?
+          test "$code" -eq 2 || { echo "expected exit 2, got $code"; exit 1; }

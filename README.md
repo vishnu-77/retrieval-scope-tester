@@ -1,5 +1,9 @@
 # Retrieval Scope Tester
 
+[![tests](https://github.com/vishnu-77/retrieval-scope-tester/actions/workflows/test.yml/badge.svg)](https://github.com/vishnu-77/retrieval-scope-tester/actions/workflows/test.yml)
+[![python: 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
+[![license: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 A provider-agnostic reference implementation for testing **retrieval-scope enforcement** in RAG systems before any LLM or generation layer is involved.
 
 It addresses the gap described in OWASP AI Exchange issue #211: a RAG application can appear safe at the prompt/model layer while its retriever or vector index still returns chunks that the current identity should not be able to access.
@@ -184,6 +188,20 @@ The tests cover exact chunk matching, same-document chunk isolation, cross-tenan
 | `2` | One or more retrieval-scope violations were detected |
 
 This makes the tester suitable for CI and scheduled security regression checks.
+
+## Contributing
+
+Issues and pull requests are welcome — particularly new backend adapters and
+additional canonical test cases.
+
+- [Open an issue](https://github.com/vishnu-77/retrieval-scope-tester/issues)
+- [Contribution guide](CONTRIBUTING.md) — how to run the checks, what is in and out of scope, how to add a backend
+- [Security policy](SECURITY.md) — how to report a false negative or an injection issue privately
+- [Discussion on the OWASP AI Exchange PR](https://github.com/OWASP/www-project-ai-security-and-privacy-guide/pull/213)
+
+The tester stays Python 3.10+ stdlib only. Backends are reached through the
+fixture, HTTP, or command adapters rather than by adding vendor SDK
+dependencies.
 
 ## Scope
 
