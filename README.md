@@ -161,11 +161,18 @@ Example mutation:
 
 Each violating resource can report one or more reasons:
 
-- `outside_authorised_scope`
-- `explicitly_denied`
-- `cross_tenant`
+- `outside_authorised_scope` — the chunk is not covered by the step's allowed resources.
+- `explicitly_denied` — the chunk matches a denied resource.
+- `cross_tenant` — the chunk carries a tenant other than the expected one.
+- `missing_tenant` — a tenant was expected but the chunk carried none.
 
 A returned chunk may carry multiple reasons at the same time.
+
+`missing_tenant` fails closed on purpose. A retriever that simply omits the
+tenant field cannot demonstrate isolation, so it is treated as a violation
+rather than a pass. Single-tenant systems opt out of tenant checking entirely
+by leaving `expected_tenant` (and the identity's `tenant`) null, in which case
+neither tenant reason is ever raised.
 
 ## Tests
 

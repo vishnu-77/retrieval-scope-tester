@@ -526,12 +526,14 @@ def evaluate_step(
             reasons.append("outside_authorised_scope")
         if is_resource_denied(step, actual):
             reasons.append("explicitly_denied")
-        if (
-            step.expected_tenant is not None
-            and tenant is not None
-            and tenant != step.expected_tenant
-        ):
-            reasons.append("cross_tenant")
+        if step.expected_tenant is not None:
+            # A chunk that carries no tenant cannot be shown to be in-tenant.
+            # Treating that as a pass would let a backend that simply omits the
+            # field clear the isolation check without enforcing anything.
+            if tenant is None:
+                reasons.append("missing_tenant")
+            elif tenant != step.expected_tenant:
+                reasons.append("cross_tenant")
 
         retrieved_resources.append(
             {

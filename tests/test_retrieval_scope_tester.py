@@ -74,6 +74,46 @@ class RetrievalScopeTesterTests(unittest.TestCase):
         self.assertEqual(result["status"], "FAIL")
         self.assertIn("cross_tenant", result["violations"][0]["reasons"])
 
+    def test_missing_tenant_fails_when_a_tenant_is_expected(self):
+        """A backend that omits the tenant field must not clear the isolation
+        check by default — absent evidence is not evidence of isolation."""
+        step = rst.QueryStep(
+            name="query",
+            identity=rst.Identity("alice", "tenant-a", ("reader",)),
+            query="q",
+            allowed_resources=frozenset({rst.ResourceRef("shared-doc")}),
+            denied_resources=frozenset(),
+            allowed_document_ids=frozenset(),
+            denied_document_ids=frozenset(),
+            expected_tenant="tenant-a",
+        )
+        result = rst.evaluate_step(
+            "case",
+            step,
+            [{"document_id": "shared-doc", "chunk_id": "c1"}],
+        )
+        self.assertEqual(result["status"], "FAIL")
+        self.assertIn("missing_tenant", result["violations"][0]["reasons"])
+
+    def test_missing_tenant_is_ignored_when_no_tenant_is_expected(self):
+        """Single-tenant systems opt out by leaving expected_tenant null."""
+        step = rst.QueryStep(
+            name="query",
+            identity=rst.Identity("alice", None, ("reader",)),
+            query="q",
+            allowed_resources=frozenset({rst.ResourceRef("shared-doc")}),
+            denied_resources=frozenset(),
+            allowed_document_ids=frozenset(),
+            denied_document_ids=frozenset(),
+            expected_tenant=None,
+        )
+        result = rst.evaluate_step(
+            "case",
+            step,
+            [{"document_id": "shared-doc", "chunk_id": "c1"}],
+        )
+        self.assertEqual(result["status"], "PASS")
+
     def test_explicit_deny_is_reported(self):
         step = rst.QueryStep(
             name="query",
