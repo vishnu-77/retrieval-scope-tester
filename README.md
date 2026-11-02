@@ -213,3 +213,7 @@ dependencies.
 ## Scope
 
 This reference implementation tests retrieval authorisation, tenant isolation and security-state propagation. It does not test prompt injection, generation behaviour, model safety, embedding inversion, corpus poisoning or parser vulnerabilities. Those require separate RAG security tests.
+
+## License
+
+[MIT](LICENSE)
