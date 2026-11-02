@@ -214,6 +214,17 @@ dependencies.
 
 This reference implementation tests retrieval authorisation, tenant isolation and security-state propagation. It does not test prompt injection, generation behaviour, model safety, embedding inversion, corpus poisoning or parser vulnerabilities. Those require separate RAG security tests.
 
+## What this does not cover
+
+The tester checks what the retriever returns for each test identity. It does not:
+
+- Check titles, snippets, citations or scores. Only `document_id`, `chunk_id` and `tenant` are evaluated.
+- Show that an application passes the caller's identity from a verified token. It tests the retriever directly, and the HTTP example sends identity in plain headers.
+- Test whether the filter runs before or after the search, or whether user input can change it.
+- Check separate copies such as caches, conversation memory or leftover embeddings after a revocation.
+
+A clean run shows no leakage for the queries tested, not that access control is enforced.
+
 ## License
 
 [MIT](LICENSE)
