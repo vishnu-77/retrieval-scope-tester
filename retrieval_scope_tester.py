@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Vishnu Prashanth
 """Provider-agnostic retrieval-scope security tester.
 
 Tests retrieval/index authorisation before any LLM or generation layer is involved.

@@ -17,7 +17,21 @@ python retrieval_scope_tester.py --plan examples/test_plan.json --fixture exampl
 python retrieval_scope_tester.py --plan examples/test_plan.json --fixture examples/fixture_vulnerable.json
 ```
 
-CI runs exactly these on 3.10 and 3.13.
+CI runs exactly these on Python 3.10 (the oldest supported version) and the
+latest stable Python 3.
+
+## Making a change
+
+`main` is protected, so nobody can push to it directly, including the
+maintainer. Every change goes through a pull request:
+
+1. Make your change on a branch, in a fork if you don't have write access.
+2. Open a pull request against `main`.
+3. The `test` checks must pass before it can be merged. Pull requests are
+   squash-merged.
+
+Released version tags (`v*`) cannot be moved or deleted, so a link to a release
+always points to the same code.
 
 ## What belongs here
 
@@ -53,6 +67,16 @@ issue describing it before writing an adapter.
 New canonical cases follow the existing `RAG-AUTH-00N` numbering in
 `examples/test_plan.json`, and should state the security property being
 asserted, not just the mechanics.
+
+## License
+
+This project uses the [MIT License](LICENSE). By opening a pull request, you
+agree that your contribution is released under the same license. New source
+files start with this line:
+
+```python
+# SPDX-License-Identifier: MIT
+```
 
 ## Reporting problems
 
